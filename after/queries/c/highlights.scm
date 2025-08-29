@@ -1,4 +1,8 @@
+
 ; extends
 
-; Scorched earth test: Highlight ALL string literals.
-(string_literal) @PlaceholderPrintf
+(argument_list
+  (string_literal) @injection.content . (_)
+  (#match? @injection.content ".*%%.*")
+  (#set! injection.language "c")
+)
