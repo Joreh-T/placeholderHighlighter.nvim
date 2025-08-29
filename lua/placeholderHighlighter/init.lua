@@ -1,3 +1,4 @@
+
 local M = {}
 
 -- 默认配置
@@ -30,16 +31,19 @@ local generic_query = [[
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 
+  -- 获取已安装的 treesitter 解析器配置
+  local parser_configs = require("nvim-treesitter.parsers").get_parser_configs()
+
   -- 循环为所有支持的语言设置查询
   for _, lang in ipairs(M.config.languages) do
     -- 检查该语言的解析器是否已安装
-    if vim.treesitter.language.get_parser(lang) then
-      local query = vim.treesitter.query.parse(lang, generic_query)
-      if query then
-        vim.treesitter.query.set(lang, "injections", query:concat())
-      else
-        vim.notify(string.format("placeholderHighlighter: Failed to parse query for language '%s'", lang), vim.log.levels.WARN)
-      end
+    if parser_configs[lang] then
+      pcall(function()
+        local query = vim.treesitter.query.parse(lang, generic_query)
+        if query then
+          vim.treesitter.query.set(lang, "injections", query:concat())
+        end
+      end)
     end
   end
 
