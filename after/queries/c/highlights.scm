@@ -1,7 +1,4 @@
-
 ; extends
 
-(argument_list
-  (string_literal) @PlaceholderPrintf . (_)
-  (#match? @PlaceholderPrintf ".*%%.*")
-)
+; Scorched earth test: Highlight ALL string literals.
+(string_literal) @PlaceholderPrintf
